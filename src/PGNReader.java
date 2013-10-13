@@ -1,5 +1,7 @@
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -10,6 +12,7 @@ public class PGNReader {
 	// public StringBuilder builder;
 	public ArrayList<Game> games;
 	public Game game;
+	public BufferedWriter output;
 
 	/**
 	 * @param args
@@ -26,7 +29,7 @@ public class PGNReader {
 
 		try {
 
-			Scanner scanner = new Scanner(new FileReader("blackmar.pgn"));
+			Scanner scanner = new Scanner(new FileReader("BDG2.PGN"));
 
 			while (scanner.hasNextLine()) {
 				String line = scanner.nextLine().trim();
@@ -68,21 +71,35 @@ public class PGNReader {
 		int black = 0;
 		int draw = 0;
 
+		try {
+			output = new BufferedWriter(new FileWriter("chessGames.csv", true));
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		for (Game game : games) {
-			//System.out.println(game.builder.toString().trim());
+			// System.out.println(game.builder.toString().trim());
 			// remove variations and annotations
 			purgeAnnotations(game);
-			
+
 			purgeVariations(game);
-			
-			
-			//System.out.println(game.builder.toString().trim());
+
+			// System.out.println(game.builder.toString().trim());
 
 			// add commas
 			commaTime(game);
-			game.setOutputLine(game.getResult() + "," +
-			game.getMoves().trim());
+			game.setOutputLine(game.getResult() + "," + game.getMoves().trim());
+
+			// write file
 			System.out.println(game);
+
+			try {
+				output.append(game.toString());
+				output.newLine();
+				// output.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 
 			if (game.getResult().equals("white")) {
 				++white;
@@ -95,11 +112,15 @@ public class PGNReader {
 			}
 			// end
 		}
-
+		try {
+			output.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		// alpha analysis
 
-		// System.out.println("white: " + white + "black: " + black + "draw: " +
-		// draw);
+		 System.out.println("white: " + white + "black: " + black + "draw: " +
+		 draw);
 
 	}
 
@@ -115,16 +136,16 @@ public class PGNReader {
 				if (game.builder.toString().trim().charAt(i) == '{') {
 
 					start = i;
-					//System.out.println("set start to: " + start);
+					// System.out.println("set start to: " + start);
 				}
 				if (game.builder.toString().trim().charAt(i) == '}') {
 					if (game.builder.toString().trim().charAt(i + 5) == '.') {
 						end = i + 8;
-					}else{
+					} else {
 						end = i + 2;
 					}
-					//System.out.println("set end to: " + end);
-					//System.out.println(start + " " + end);
+					// System.out.println("set end to: " + end);
+					// System.out.println(start + " " + end);
 					game.builder.delete(start, end);
 					removedOne = true;
 					break;
@@ -136,8 +157,8 @@ public class PGNReader {
 
 		}
 	}
-	
-	public void purgeVariations(Game gqme){
+
+	public void purgeVariations(Game gqme) {
 		int start = 0;
 		int end = 0;
 		boolean clean = false;
@@ -149,12 +170,12 @@ public class PGNReader {
 				if (game.builder.toString().trim().charAt(i) == '(') {
 
 					start = i;
-					//System.out.println("set start to: " + start);
+					// System.out.println("set start to: " + start);
 				}
 				if (game.builder.toString().trim().charAt(i) == ')') {
 					end = i + 7;
-					//System.out.println("set end to: " + end);
-					//System.out.println(start + " " + end);
+					// System.out.println("set end to: " + end);
+					// System.out.println(start + " " + end);
 					game.builder.delete(start, end);
 					removedOne = true;
 					break;
@@ -183,6 +204,5 @@ public class PGNReader {
 		// System.out.println("set moves!");
 		game.setMoves(game.builder.toString());
 	}
-	
-	
+
 }
