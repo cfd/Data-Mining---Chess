@@ -4841,24 +4841,6 @@ Nd3 Qc7 21. Qe1 Rfc8 22. Qe2 Ra7 23. h4 Qd6 24. Nb4 Rac7 25. Rd3 Qf4+ 26.
 Kb1 Nd6 27. h5 gxh5 28. Rxh5 Ne4 29. Rdh3 Kf8 30. f3 Nd2+ 31. Ka2 Qxd4 32.
 Nxd5 Qxb2+ 33. Kxb2 Rxc2+ 34. Ka1 Rc1+ 0-1
 
-[Event "Model game 2.7: (failure to gu"]
-[Site "Model game 2.7: (failure to g"]
-[Date "1907.??.??"]
-[Round "?"]
-[White "Kunitz"]
-[Black "Salamon"]
-[Result "1-0"]
-[ECO "D00"]
-[PlyCount "25"]
-
-1. d4 d5 2. e4 dxe4 3. f3 (3. Nc3) 3... exf3 4. Nxf3 Bg4 5. Be3 Nc6 6. c3 {
- White has offered a gambit but hasd little to show for it } 6... e5 { too
-optimistic - ...e6 was safer, keeping lines closed } 7. d5 Nce7 8. Qa4+ Bd7
-9. Qe4 f6 10. Bd3 {  White is now nicely placed - Black must be very 
-careful } 10... Ng6 { examine moves that smite - checks and captures } 11.
-Qxg6+ { this is a check and a capture! } 11... hxg6 12. Bxg6+ Ke7 13. Bc5#
-1-0
-
 [Event "Pawn sacrifice: club player style"]
 [Site "Devon vs. Dorset"]
 [Date "1998.??.??"]
