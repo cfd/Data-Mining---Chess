@@ -48,13 +48,13 @@ public abstract class AbstractOrderedItemset extends AbstractItemset{
 	 * @param position the position of the item to be returned
 	 * @return the item
 	 */
-	public abstract Integer get(int position);
+	public abstract String get(int position);
 
 	/**
 	 * Get the last item.
 	 * @return the last item.
 	 */
-	public Integer getLastItem() {
+	public String getLastItem() {
 		return get(size() - 1);
 	}
 	
@@ -90,11 +90,11 @@ public abstract class AbstractOrderedItemset extends AbstractItemset{
 	 * @param item  the item
 	 * @return true if the item is contained in this itemset
 	 */
-	public boolean contains(Integer item) {
+	public boolean contains(String item) {
 		for (int i=0; i< size(); i++) {
 			if (get(i).equals(item)) {
 				return true;
-			} else if (get(i) > item) {
+			} else /*if (get(i) > item)*/ {
 				return false;
 			}
 		}
@@ -134,9 +134,10 @@ public abstract class AbstractOrderedItemset extends AbstractItemset{
 				}// if the current item in this itemset is larger than 
 				// the current item from itemset2, we return false
 				// because the itemsets are assumed to be lexically ordered.
-				else if(get(i) > itemset2.get(j)){
-					return false;
-				}
+				//cfd: 'else if' lines commented due to no numerical order in chess moves
+				//else if(get(i) > itemset2.get(j)){
+					//return false;
+				//}
 				
 				i++; // continue searching from position  i++
 			}
@@ -201,7 +202,7 @@ public abstract class AbstractOrderedItemset extends AbstractItemset{
 	* this method return the last item of itemset2. Otherwise it returns null.
 	* @return the last item of itemset2, otherwise, null.
 	* */
-	public Integer allTheSameExceptLastItem(AbstractOrderedItemset itemset2) {
+	public String allTheSameExceptLastItem(AbstractOrderedItemset itemset2) {
 		// if these itemsets do not have the same size,  return null
 		if(itemset2.size() != this.size()){
 			return null;
@@ -213,9 +214,10 @@ public abstract class AbstractOrderedItemset extends AbstractItemset{
 				// We check if the item from this itemset is be smaller (lexical order) 
 				// and different from the one of itemset2.
 				// If not, return null.
-				if(this.get(i) >= itemset2.get(i)){  
-					return null;
-				}
+				//cfd: 'if' commented - no order
+				//if(this.get(i) >= itemset2.get(i)){  
+				//	return null;
+				//}
 			}
 			// If this is not the last position, we check if items are the same
 			else if(!this.get(i).equals(itemset2.get(i))){ 

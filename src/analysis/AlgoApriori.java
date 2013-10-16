@@ -73,7 +73,8 @@ public class AlgoApriori {
 	
 	// A memory representation of the database.
 	// Each position in the list represents a transaction
-	private List<int[]> database = null;
+	//cfd: type changed to String
+	private List<String[]> database = null;
 	
 	// The  patterns that are found 
 	// (if the user want to keep them into memory)
@@ -124,9 +125,10 @@ public class AlgoApriori {
 		databaseSize = 0;
 		// Map to count the support of each item
 		// Key: item  Value : support
-		Map<Integer, Integer> mapItemCount = new HashMap<Integer, Integer>(); // to count the support of each item
+		//cfd: again, changed type to String - of the item in the map
+		Map<String, Integer> mapItemCount = new HashMap<String, Integer>(); // to count the support of each item
 		
-		database = new ArrayList<int[]>(); // the database in memory (intially empty)
+		database = new ArrayList<String[]>(); // the database in memory (intially empty)
 		
 		// scan the database to load it into memory and count the support of each single item at the same time
 		BufferedReader reader = new BufferedReader(new FileReader(fileInput));
@@ -141,15 +143,19 @@ public class AlgoApriori {
 				continue;
 			}
 			// split the line according to spaces
-			String[] lineSplited = line.split(" ");
+			String[] lineSplited = line.split(",");
 			
 			// create an array of int to store the items in this transaction
-			int transaction[] = new int[lineSplited.length];
+			//cfd: Changed data types to String
+			String transaction[] = new String[lineSplited.length];
 			
 			// for each item in this line (transaction)
 			for (int i=0; i< lineSplited.length; i++) { 
 				// transform this item from a string to an integer
-				Integer item = Integer.parseInt(lineSplited[i]);
+				//cfd: REPLACED THIS LINE AS WE NEED TO WORK WITH STRINGS
+				//PROBABLY NEED TO PUT .equals() IN  A LOT OF PLACES :(
+				//Integer item = Integer.parseInt(lineSplited[i]);
+				String item = lineSplited[i];
 				// store the item in the memory representation of the database
 				transaction[i] = item;
 				// increase the support count
@@ -176,8 +182,8 @@ public class AlgoApriori {
 		k = 1;
 		
 		// We add all frequent items to the set of candidate of size 1
-		List<Integer> frequent1 = new ArrayList<Integer>();
-		for(Entry<Integer, Integer> entry : mapItemCount.entrySet()){
+		List<String> frequent1 = new ArrayList<String>();
+		for(Entry<String, Integer> entry : mapItemCount.entrySet()){
 			if(entry.getValue() >= minsupRelative){
 				frequent1.add(entry.getKey());
 				saveItemsetToFile(entry.getKey(), entry.getValue());
@@ -187,11 +193,12 @@ public class AlgoApriori {
 		
 		// We sort the list of candidates by lexical order
 		// (Apriori need to use a total order otherwise it does not work)
-		Collections.sort(frequent1, new Comparator<Integer>() {
-			public int compare(Integer o1, Integer o2) {
-				return o1 - o2;
-			}
-		});
+		//cfd: apparently it wont work ^^^, but we dont want to sort our moves.
+		//Collections.sort(frequent1, new Comparator<Integer>() {
+			//public int compare(Integer o1, Integer o2) {
+				//return o1 - o2;
+			//}
+		//});
 		
 		// If no frequent item, the algorithm stops!
 		if(frequent1.size() == 0){
@@ -232,16 +239,16 @@ public class AlgoApriori {
 			// We scan the database one time to calculate the support
 			// of each candidates and keep those with higher suport.
 			// For each transaction:
-			for(int[] transaction: database){
+			for(String[] transaction: database){
 				// for each candidate:
 	 loopCand:	for(Itemset candidate : candidatesK){
 		 			// a variable that will be use to check if 
 		 			// all items of candidate are in this transaction
 					int pos = 0;
 					// for each item in this transaction
-					for(int item: transaction){
+					for(String item: transaction){
 						// if the item correspond to the current item of candidate
-						if(item == candidate.itemset[pos]){
+						if(item.equals(candidate.itemset[pos])){
 							// we will try to find the next item of candidate next
 							pos++;
 							// if we found all items of candidate in this transaction
@@ -253,7 +260,7 @@ public class AlgoApriori {
 					    // Because of lexical order, we don't need to 
 						// continue scanning the transaction if the current item
 						// is larger than the one that we search  in candidate.
-						}else if(item > candidate.itemset[pos]){
+						}else /*cdf:if(item > candidate.itemset[pos])*/{
 							continue loopCand;
 						}
 						
@@ -304,17 +311,17 @@ public class AlgoApriori {
 	 * @param frequent1  the list of frequent itemsets of size 1.
 	 * @return a List of Itemset that are the candidates of size 2.
 	 */
-	private List<Itemset> generateCandidate2(List<Integer> frequent1) {
+	private List<Itemset> generateCandidate2(List<String> frequent1) {
 		List<Itemset> candidates = new ArrayList<Itemset>();
 		
 		// For each itemset I1 and I2 of level k-1
 		for (int i = 0; i < frequent1.size(); i++) {
-			Integer item1 = frequent1.get(i);
+			String item1 = frequent1.get(i);
 			for (int j = i + 1; j < frequent1.size(); j++) {
-				Integer item2 = frequent1.get(j);
+				String item2 = frequent1.get(j);
 
 				// Create a new candidate by combining itemset1 and itemset2
-				candidates.add(new Itemset(new int []{item1, item2}));
+				candidates.add(new Itemset(new String[]{item1, item2}));
 			}
 		}
 		return candidates;
@@ -331,9 +338,9 @@ public class AlgoApriori {
 
 		// For each itemset I1 and I2 of level k-1
 		loop1: for (int i = 0; i < levelK_1.size(); i++) {
-			int[] itemset1 = levelK_1.get(i).itemset;
+			String[] itemset1 = levelK_1.get(i).itemset;
 			loop2: for (int j = i + 1; j < levelK_1.size(); j++) {
-				int[] itemset2 = levelK_1.get(j).itemset;
+				String[] itemset2 = levelK_1.get(j).itemset;
 
 				// we compare items of itemset1 and itemset2.
 				// If they have all the same k-1 items and the last item of
@@ -346,21 +353,22 @@ public class AlgoApriori {
 						// the one from itemset1 should be smaller (lexical
 						// order)
 						// and different from the one of itemset2
-						if (itemset1[k] >= itemset2[k]) {
-							continue loop1;
-						}
+						//cfd: order...
+						//if (itemset1[k] >= itemset2[k]) {
+							//continue loop1;
+						//}
 					}
 					// if they are not the last items, and
-					else if (itemset1[k] < itemset2[k]) {
-						continue loop2; // we continue searching
-					} else if (itemset1[k] > itemset2[k]) {
-						continue loop1; // we stop searching: because of lexical
+					//else if (itemset1[k] < itemset2[k]) {
+						//continue loop2; // we continue searching
+					//} else if (itemset1[k] > itemset2[k]) {
+						//continue loop1; // we stop searching: because of lexical
 										// order
-					}
+					//}
 				}
 
 				// Create a new candidate by combining itemset1 and itemset2
-				int newItemset[] = new int[itemset1.length+1];
+				String newItemset[] = new String[itemset1.length+1];
 				System.arraycopy(itemset1, 0, newItemset, 0, itemset1.length);
 				newItemset[itemset1.length] = itemset2[itemset2.length -1];
 
@@ -377,13 +385,13 @@ public class AlgoApriori {
 
 	/**
 	 * Method to check if all the subsets of size k-1 of a candidate of size k are freuqnet
-	 * @param candidate a candidate itemset of size k
+	 * @param newItemset a candidate itemset of size k
 	 * @param levelK_1  the frequent itemsets of size k-1
 	 * @return true if all the subsets are frequet
 	 */
-	protected boolean allSubsetsOfSizeK_1AreFrequent(int[] candidate, List<Itemset> levelK_1) {
+	protected boolean allSubsetsOfSizeK_1AreFrequent(String[] newItemset, List<Itemset> levelK_1) {
 		// generate all subsets by always each item from the candidate, one by one
-		for(int posRemoved=0; posRemoved< candidate.length; posRemoved++){
+		for(int posRemoved=0; posRemoved< newItemset.length; posRemoved++){
 
 			// perform a binary search to check if  the subset appears in  level k-1.
 	        int first = 0;
@@ -396,10 +404,10 @@ public class AlgoApriori {
 	        {
 	        	int middle = ( first + last ) / 2;
 
-	            if(sameAs(levelK_1.get(middle), candidate, posRemoved)  < 0 ){
+	            if(sameAs(levelK_1.get(middle), newItemset, posRemoved)  < 0 ){
 	            	first = middle + 1;  //  the itemset compared is larger than the subset according to the lexical order
 	            }
-	            else if(sameAs(levelK_1.get(middle), candidate, posRemoved)  > 0 ){
+	            else if(sameAs(levelK_1.get(middle), newItemset, posRemoved)  > 0 ){
 	            	last = middle - 1; //  the itemset compared is smaller than the subset  is smaller according to the lexical order
 	            }
 	            else{
@@ -420,12 +428,12 @@ public class AlgoApriori {
 /**
  * Method to compare two itemsets and see if they are the same
  * @param itemset an itemset
- * @param candidate a candidate itemset
+ * @param newItemset a candidate itemset
  * @param posRemoved  the position of an item that should be removed from "candidate" to perform the comparison.
  * @return 0 if they are the same, 1 if itemset is larger according to lexical order,
  *         -1 if smaller.
  */
-private int sameAs(Itemset itemset, int [] candidate, int posRemoved) {
+private int sameAs(Itemset itemset, String[] newItemset, int posRemoved) {
 		// a variable to know which item from candidate we are currently searching
 		int j=0;
 		// loop on items from "itemset"
@@ -435,16 +443,17 @@ private int sameAs(Itemset itemset, int [] candidate, int posRemoved) {
 				j++;
 			}
 			// if we found the item j, we will search the next one
-			if(itemset.itemset[i] == candidate[j]){
+			if(itemset.itemset[i] == newItemset[j]){
 				j++;
 			// if  the current item from i is larger than j, 
 		    // it means that "itemset" is larger according to lexical order
 			// so we return 1
-			}else if (itemset.itemset[i] > candidate[j]){
-				return 1;
-			}else{
+				//cfd: ORDER!
+			//}else if (itemset.itemset[i] > newItemset[j]){
+				//return 1;
+			//}else{
 				// otherwise "itemset" is smaller so we return -1.
-				return -1;
+				//return -1;
 			}
 		}
 		return 0;
@@ -465,16 +474,16 @@ private int sameAs(Itemset itemset, int [] candidate, int posRemoved) {
 		}
 	}
 	
-	 void saveItemsetToFile(Integer item, Integer support) throws IOException {
+	 void saveItemsetToFile(String string, Integer support) throws IOException {
 		itemsetCount++;
 		
 		// if the result should be saved to a file
 		if(writer != null){
-			writer.write(item + " #SUP: " + support);
+			writer.write(string + " #SUP: " + support);
 			writer.newLine();
 		}// otherwise the result is kept into memory
 		else{
-			Itemset itemset = new Itemset(item);
+			Itemset itemset = new Itemset(string);
 			itemset.setAbsoluteSupport(support);
 			patterns.addItemset(itemset, 1);
 		}

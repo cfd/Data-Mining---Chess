@@ -58,7 +58,7 @@ public abstract class AbstractMutableOrderedItemset extends AbstractOrderedItems
 		AbstractMutableOrderedItemset itemset = createNewEmptyItemset();
 		// Make a loop to copy each item 
 		for(int i=0; i< size(); i++){
-			Integer item = this.get(i);
+			String item = this.get(i);
 			// If the current item  should  be included, we add it.
 			if(!itemsetToNotKeep.contains(item)){
 				itemset.addItem(item);
@@ -67,6 +67,11 @@ public abstract class AbstractMutableOrderedItemset extends AbstractOrderedItems
 		return itemset; // return the new itemset
 	}
 	
+	private void addItem(String item) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	/**
 	 * Make a copy of this itemset but exclude a given item from the copy.
 	 * @param itemToNotInclude  the item that should not be included
@@ -77,7 +82,7 @@ public abstract class AbstractMutableOrderedItemset extends AbstractOrderedItems
 		AbstractMutableOrderedItemset itemset = createNewEmptyItemset();
 		// Make a loop to copy each item 
 		for(int i=0; i< size(); i++){
-			Integer item = this.get(i);
+			String item = this.get(i);
 			// If the current item  should  be included, we add it.
 			if(!itemToNotInclude.equals(item)){
 				itemset.addItem(item);
@@ -96,7 +101,7 @@ public abstract class AbstractMutableOrderedItemset extends AbstractOrderedItems
 	public AbstractMutableOrderedItemset intersection(AbstractMutableOrderedItemset itemset2) {
 		AbstractMutableOrderedItemset intersection = createNewEmptyItemset();
 		for(int i=0; i< size(); i++){
-			Integer item = this.get(i);
+			String item = this.get(i);
 			
 			if (itemset2.contains(item)) {
 				intersection.addItem(item);

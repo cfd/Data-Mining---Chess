@@ -94,8 +94,10 @@ public class PGNReader {
 			System.out.println(game);
 
 			try {
-				output.append(game.toString());
-				output.newLine();
+				if (game.getResult().equals("draw")) {
+					output.append(game.toString());
+					output.newLine();
+				}
 				// output.close();
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -119,8 +121,8 @@ public class PGNReader {
 		}
 		// alpha analysis
 
-		 System.out.println("white: " + white + "black: " + black + "draw: " +
-		 draw);
+		System.out.println("white: " + white + "black: " + black + "draw: "
+				+ draw);
 
 	}
 
