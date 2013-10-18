@@ -94,6 +94,7 @@ public class PGNReader {
 			System.out.println(game);
 
 			try {
+				//change literal parameter for diff file
 				if (game.getResult().equals("draw")) {
 					output.append(game.toString());
 					output.newLine();
